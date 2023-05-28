@@ -54,7 +54,7 @@ const FilmsForm: FunctionComponent = () => {
   return (
     <>
       <Typography variant="h4" gutterBottom component="h2">
-        {true ? "Create" : "Edit"} Planet
+        {true ? "Create" : "Edit"} Film
       </Typography>
       <TextField
         type="text"

@@ -7,6 +7,8 @@ import {
   Container,
   Box,
   Typography,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
 import { create } from "../../services/UserService";
 import { globalAlertContext } from "../../context/GlobalAlertContext";
@@ -22,8 +24,8 @@ const SignUpPage: FunctionComponent = () => {
     confirm_password: "",
   });
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
-  const { setAlertInfo } = useContext(globalAlertContext);
   const navigate = useNavigate();
+  const { alertInfo, setAlertInfo } = useContext(globalAlertContext);
 
   const handleSubmit = () => {
     let validForm = true;
@@ -72,6 +74,35 @@ const SignUpPage: FunctionComponent = () => {
   return (
     <Box>
       <Container component="main" maxWidth="sm">
+        {alertInfo.show ? (
+          <Alert
+            sx={{
+              mt: "50px",
+            }}
+            onClose={() => {
+              setAlertInfo({
+                show: false,
+                title: "Success",
+                subtitle: "",
+                type: "success",
+              });
+            }}
+            severity={
+              alertInfo.type === "success"
+                ? "success"
+                : alertInfo.type === "error"
+                ? "error"
+                : alertInfo.type === "info"
+                ? "info"
+                : "warning"
+            }
+          >
+            <AlertTitle>{alertInfo.title}</AlertTitle>
+            {alertInfo.subtitle}
+          </Alert>
+        ) : (
+          <></>
+        )}
         <Box height="100vh" display="flex" alignItems="center">
           <Box m="auto">
             <Card sx={{ minWidth: 275 }}>

@@ -1,5 +1,7 @@
 import AppBar from "@mui/material/AppBar";
 import {
+  Alert,
+  AlertTitle,
   Drawer,
   IconButton,
   List,
@@ -17,16 +19,18 @@ import PublicIcon from "@mui/icons-material/Public";
 import { Box, useTheme } from "@mui/system";
 import { Link } from "react-router-dom";
 import { Container } from "@mui/system";
-import { FunctionComponent } from "react";
+import { FunctionComponent, useContext } from "react";
 import { Outlet } from "react-router";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 import { useAuth } from "../../hooks/useAuth";
+import { globalAlertContext } from "../../context/GlobalAlertContext";
 
 const drawerWidth = 240;
 
 const InnerContent: FunctionComponent = () => {
   const theme = useTheme();
   const { logout } = useAuth();
+  const { alertInfo, setAlertInfo } = useContext(globalAlertContext);
   return (
     <Box sx={{ display: "flex" }}>
       <AppBar
@@ -42,7 +46,7 @@ const InnerContent: FunctionComponent = () => {
               display: "flex",
               justifyContent: "flex-end",
               alignItems: "center",
-              width: "100%"
+              width: "100%",
             }}
           >
             <Typography
@@ -58,7 +62,15 @@ const InnerContent: FunctionComponent = () => {
               edge="start"
               color="inherit"
               aria-label="menu"
-              onClick={() => logout()}
+              onClick={() => {
+                setAlertInfo({
+                  title: "Error",
+                  subtitle: "TEST",
+                  type: "error",
+                  show: false,
+                });
+                logout();
+              }}
               sx={{ mr: 2 }}
             >
               <PowerSettingsNewIcon />
@@ -149,6 +161,32 @@ const InnerContent: FunctionComponent = () => {
       <Box component="main" sx={{ bgcolor: "background.default", p: 3 }}>
         <Toolbar />
         <Container>
+          {alertInfo.show ? (
+            <Alert
+              onClose={() => {
+                setAlertInfo({
+                  show: false,
+                  title: "Success",
+                  subtitle: "",
+                  type: "success",
+                });
+              }}
+              severity={
+                alertInfo.type === "success"
+                  ? "success"
+                  : alertInfo.type === "error"
+                  ? "error"
+                  : alertInfo.type === "info"
+                  ? "info"
+                  : "warning"
+              }
+            >
+              <AlertTitle>{alertInfo.title}</AlertTitle>
+              {alertInfo.subtitle}
+            </Alert>
+          ) : (
+            <></>
+          )}
           <Outlet />
         </Container>
       </Box>

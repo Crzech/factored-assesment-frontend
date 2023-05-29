@@ -1,23 +1,106 @@
-import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { FunctionComponent } from "react";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { FunctionComponent, useContext, useState } from "react";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
-
-// interface FormData {
-  // planets: Array<{ id: number; name: String | undefined }>;
-// }
-
-// const planets = [
-//   { id: 1, name: "Planet 1" },
-//   { id: 2, name: "Planet 2" },
-// ];
+import Planet from "../../../types/planets";
+import { createPlanet } from "../../../services/PlanetsService";
+import { useAuth } from "../../../hooks/useAuth";
+import { globalAlertContext } from "../../../context/GlobalAlertContext";
+import { useNavigate } from "react-router";
 
 const PlanetsForm: FunctionComponent = () => {
+  const [formData, setFormData] = useState<Planet>({
+    id: null,
+    name: "",
+    diameter: "",
+    rotation_period: "",
+    orbital_period: "",
+    gravity: "",
+    population: "",
+    climate: "",
+    terrain: "",
+    surface_water: "",
+    created: null,
+    edited: null,
+  });
+  const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+  const { user } = useAuth();
+  const { setAlertInfo } = useContext(globalAlertContext);
+  const navigate = useNavigate();
+  const handleSubmit = () => {
+    let validForm = true;
+    if (!formData.name) {
+      validForm = false;
+      setErrors((prevState) => ({ ...prevState, name: true }));
+    }
+    if (!formData.diameter) {
+      validForm = false;
+      setErrors((prevState) => ({ ...prevState, diameter: true }));
+    }
+    if (!formData.rotation_period) {
+      validForm = false;
+      setErrors((prevState) => ({ ...prevState, rotation_period: true }));
+    }
+    if (!formData.orbital_period) {
+      validForm = false;
+      setErrors((prevState) => ({ ...prevState, orbital_period: true }));
+    }
+    if (!formData.gravity) {
+      validForm = false;
+      setErrors((prevState) => ({ ...prevState, gravity: true }));
+    }
+    if (!formData.population) {
+      validForm = false;
+      setErrors((prevState) => ({ ...prevState, population: true }));
+    }
+    if (!formData.climate) {
+      validForm = false;
+      setErrors((prevState) => ({ ...prevState, climate: true }));
+    }
+    if (!formData.terrain) {
+      validForm = false;
+      setErrors((prevState) => ({ ...prevState, terrain: true }));
+    }
+    if (!formData.surface_water) {
+      validForm = false;
+      setErrors((prevState) => ({ ...prevState, surface_water: true }));
+    }
+    setAlertInfo({
+      title: "Error",
+      subtitle: "TEST",
+      type: "error",
+      show: true,
+    });
+    if (validForm) {
+      if (!formData.id) {
+        setAlertInfo({
+          title: "Error",
+          subtitle: "TEST",
+          type: "error",
+          show: true,
+        });
+        // createPlanet(formData, user?.token)
+        //   .then((response) => {
+        //     navigate("/planets");
+        //     setAlertInfo({
+        //       title: "Success",
+        //       subtitle: "Planet Saved successfully",
+        //       type: "success",
+        //       show: true,
+        //     })
+        //   }
+        //   )
+        //   .catch((err) =>
+        //     setAlertInfo({
+        //       title: "Error",
+        //       subtitle: err.message,
+        //       type: "error",
+        //       show: true,
+        //     })
+        //   );
+      }
+    }
+  };
   return (
     <>
       <Typography variant="h4" gutterBottom component="h2">
@@ -28,7 +111,14 @@ const PlanetsForm: FunctionComponent = () => {
         variant="outlined"
         color="secondary"
         label="Name"
-        // onChange={(e) => setFirstName(e.target.value)}
+        error={errors["name"]}
+        helperText={errors["name"] && "Name should not be blank"}
+        onChange={(e) =>
+          setFormData((prevState) => ({
+            ...prevState,
+            name: e.target.value,
+          }))
+        }
         // value={firstName}
         sx={{ mb: 4 }}
         fullWidth
@@ -38,8 +128,16 @@ const PlanetsForm: FunctionComponent = () => {
         label="Diameter"
         type="number"
         sx={{ mb: 4 }}
-        fullWidth
+        error={errors["diameter"]}
+        helperText={errors["diameter"] && "Diameter should not be blank"}
+        onChange={(e) =>
+          setFormData((prevState) => ({
+            ...prevState,
+            diameter: e.target.value,
+          }))
+        }
         required
+        fullWidth
       />
       <TextField
         type="text"
@@ -47,8 +145,18 @@ const PlanetsForm: FunctionComponent = () => {
         color="secondary"
         label="Rotation Period"
         sx={{ mb: 4 }}
-        fullWidth
+        error={errors["rotation_period"]}
         required
+        helperText={
+          errors["rotation_period"] && "Rotation Period should not be blank"
+        }
+        onChange={(e) =>
+          setFormData((prevState) => ({
+            ...prevState,
+            rotation_period: e.target.value,
+          }))
+        }
+        fullWidth
       />
       <TextField
         type="text"
@@ -56,7 +164,16 @@ const PlanetsForm: FunctionComponent = () => {
         color="secondary"
         label="Orbital Period"
         sx={{ mb: 4 }}
-        // onChange={(e) => setFirstName(e.target.value)}
+        error={errors["orbital_period"]}
+        helperText={
+          errors["orbital_period"] && "Orbital Period should not be blank"
+        }
+        onChange={(e) =>
+          setFormData((prevState) => ({
+            ...prevState,
+            orbital_period: e.target.value,
+          }))
+        }
         // value={firstName}
         fullWidth
         required
@@ -67,7 +184,14 @@ const PlanetsForm: FunctionComponent = () => {
         color="secondary"
         label="Gravity"
         sx={{ mb: 4 }}
-        // onChange={(e) => setFirstName(e.target.value)}
+        error={errors["gravity"]}
+        helperText={errors["gravity"] && "Gravital should not be blank"}
+        onChange={(e) =>
+          setFormData((prevState) => ({
+            ...prevState,
+            gravity: e.target.value,
+          }))
+        }
         // value={firstName}
         fullWidth
         required
@@ -78,7 +202,14 @@ const PlanetsForm: FunctionComponent = () => {
         color="secondary"
         label="Population"
         sx={{ mb: 4 }}
-        // onChange={(e) => setFirstName(e.target.value)}
+        error={errors["population"]}
+        helperText={errors["population"] && "Population should not be blank"}
+        onChange={(e) =>
+          setFormData((prevState) => ({
+            ...prevState,
+            population: e.target.value,
+          }))
+        }
         // value={firstName}
         fullWidth
         required
@@ -89,7 +220,14 @@ const PlanetsForm: FunctionComponent = () => {
         color="secondary"
         label="Climate"
         sx={{ mb: 4 }}
-        // onChange={(e) => setFirstName(e.target.value)}
+        error={errors["climate"]}
+        helperText={errors["climate"] && "Climate should not be blank"}
+        onChange={(e) =>
+          setFormData((prevState) => ({
+            ...prevState,
+            climate: e.target.value,
+          }))
+        }
         // value={firstName}
         fullWidth
         required
@@ -100,7 +238,14 @@ const PlanetsForm: FunctionComponent = () => {
         color="secondary"
         label="Terrain"
         sx={{ mb: 4 }}
-        // onChange={(e) => setFirstName(e.target.value)}
+        error={errors["terrain"]}
+        helperText={errors["terrain"] && "Terrain should not be blank"}
+        onChange={(e) =>
+          setFormData((prevState) => ({
+            ...prevState,
+            terrain: e.target.value,
+          }))
+        }
         // value={firstName}
         fullWidth
         required
@@ -111,13 +256,27 @@ const PlanetsForm: FunctionComponent = () => {
         color="secondary"
         label="Surface Water"
         sx={{ mb: 4 }}
-        // onChange={(e) => setFirstName(e.target.value)}
+        error={errors["surface_water"]}
+        helperText={
+          errors["surface_water"] && "Surface Water should not be blank"
+        }
+        onChange={(e) =>
+          setFormData((prevState) => ({
+            ...prevState,
+            surface_water: e.target.value,
+          }))
+        }
         // value={firstName}
         fullWidth
         required
       />
       <Box display="flex" justifyContent="center">
-        <Button variant="outlined" color="primary" type="submit">
+        <Button
+          onClick={handleSubmit}
+          variant="outlined"
+          color="primary"
+          type="submit"
+        >
           Submit
         </Button>
       </Box>

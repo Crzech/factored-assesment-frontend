@@ -1,7 +1,11 @@
 import { Button, Grid, Typography } from "@mui/material";
-import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
-import { FunctionComponent } from "react";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { FunctionComponent, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { getAllPlanets } from "../../../services/PlanetsService";
+import { useAuth } from "../../../hooks/useAuth";
+import Planet from "../../../types/planets";
+import { globalAlertContext } from "../../../context/GlobalAlertContext";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -37,7 +41,7 @@ const columns: GridColDef[] = [
   {
     field: "terrain",
     headerName: "Terrain",
-    width: 90,
+    width: 160,
   },
   {
     field: "surface_water",
@@ -47,12 +51,12 @@ const columns: GridColDef[] = [
   {
     field: "created",
     headerName: "Created",
-    width: 90,
+    width: 150,
   },
   {
     field: "edited",
     headerName: "Edited",
-    width: 90,
+    width: 150,
   },
   {
     field: "edit",
@@ -73,55 +77,28 @@ const columns: GridColDef[] = [
     },
   },
 ];
-const rows: GridRowsProp = [
-  {
-    id: 1,
-    name: "Planet 1",
-    diameter: "21309 m3",
-    rotation_period: 24,
-    orbital_period: 320,
-    gravity: 9.82,
-    population: "100B",
-    climate: "Weather",
-    terrain: "Mountains",
-    surface_water: "100B",
-    release_date: "21/01/2023",
-    created: "21/01/2023",
-    edited: "21/01/2023",
-  },
-  {
-    id: 2,
-    name: "Planet 2",
-    diameter: "21309 m3",
-    rotation_period: 24,
-    orbital_period: 320,
-    gravity: 9.82,
-    population: "100B",
-    climate: "Weather",
-    terrain: "Mountains",
-    surface_water: "100B",
-    release_date: "21/01/2023",
-    created: "21/01/2023",
-    edited: "21/01/2023",
-  },
-  {
-    id: 3,
-    name: "Planet 3",
-    diameter: "21309 m3",
-    rotation_period: 24,
-    orbital_period: 320,
-    gravity: 9.82,
-    population: "100B",
-    climate: "Weather",
-    terrain: "Mountains",
-    surface_water: "100B",
-    release_date: "21/01/2023",
-    created: "21/01/2023",
-    edited: "21/01/2023",
-  },
-];
+
 const PlanetsIndex: FunctionComponent = () => {
   let navigate = useNavigate();
+  const [rows, setRows] = useState<Planet[]>([]);
+  const { user } = useAuth();
+  const { setAlertInfo } = useContext(globalAlertContext);
+
+  useEffect(() => {
+    getAllPlanets(user?.token)
+      .then((response) => {
+        const planets = response.data as Planet[];
+        setRows(planets);
+      })
+      .catch((err) => {
+        setAlertInfo({
+          title: "Error",
+          subtitle: err.message,
+          type: "error",
+          show: true,
+        });
+      });
+  }, [user?.token, setAlertInfo]);
   return (
     <>
       <Grid container spacing={1}>
@@ -138,12 +115,26 @@ const PlanetsIndex: FunctionComponent = () => {
           justifyContent="end"
           alignItems="center"
         >
-          <Button onClick={() => navigate('/planets/form')} variant="contained" color="success">
+          <Button
+            onClick={() => navigate("/planets/form")}
+            variant="contained"
+            color="success"
+          >
             Add
           </Button>
         </Grid>
         <Grid item xs={12}>
-          <DataGrid columns={columns} rows={rows} />
+          <DataGrid
+            columns={columns}
+            rows={rows}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+          />
         </Grid>
       </Grid>
     </>

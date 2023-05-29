@@ -1,4 +1,4 @@
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent, useContext, useState } from "react";
 import {
   Button,
   Card,
@@ -8,20 +8,52 @@ import {
   Box,
   Avatar,
   Typography,
+  Alert,
+  AlertTitle,
 } from "@mui/material";
 import logo from "../../assets/logo-starwars.jpg";
 import { useAuth } from "../../hooks/useAuth";
 import { Link } from "react-router-dom";
-// color="#66ada4"
+import { globalAlertContext } from "../../context/GlobalAlertContext";
 const LoginPage: FunctionComponent = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
   const { login } = useAuth();
+  const { alertInfo, setAlertInfo } = useContext(globalAlertContext);
   return (
     <Box>
       <Container component="main" maxWidth="sm">
+        {alertInfo.show ? (
+          <Alert
+            sx={{
+              mt: "50px",
+            }}
+            onClose={() => {
+              setAlertInfo({
+                show: false,
+                title: "Success",
+                subtitle: "",
+                type: "success",
+              });
+            }}
+            severity={
+              alertInfo.type === "success"
+                ? "success"
+                : alertInfo.type === "error"
+                ? "error"
+                : alertInfo.type === "info"
+                ? "info"
+                : "warning"
+            }
+          >
+            <AlertTitle>{alertInfo.title}</AlertTitle>
+            {alertInfo.subtitle}
+          </Alert>
+        ) : (
+          <></>
+        )}
         <Box height="100vh" display="flex" alignItems="center">
           <Box m="auto">
             <Card sx={{ minWidth: 275 }}>
@@ -80,10 +112,7 @@ const LoginPage: FunctionComponent = () => {
                   }
                 />
                 <Box textAlign="center" sx={{ mb: 4 }}>
-                  <Link
-                    style={{ color: "inherit" }}
-                    to="/signup"
-                  >
+                  <Link style={{ color: "inherit" }} to="/signup">
                     Create an account
                   </Link>
                 </Box>

@@ -45,6 +45,12 @@ export const AuthProvider: FunctionComponent<AuthProviderProps> = ({
           const decoded = jwt_decode(response.data.token) as User;
           decoded.token = response.data.token;
           setUser(decoded);
+          setAlertInfo({
+            title: null,
+            subtitle: null,
+            type: "",
+            show: false,
+          });
           navigate("/");
         }
       })

@@ -1,12 +1,16 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { FunctionComponent, useContext, useState } from "react";
+import { FunctionComponent, useContext, useEffect, useState } from "react";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
 import Planet from "../../../types/planets";
-import { createPlanet } from "../../../services/PlanetsService";
+import {
+  createPlanet,
+  getPlanetInfo,
+  updatePlanet,
+} from "../../../services/PlanetsService";
 import { useAuth } from "../../../hooks/useAuth";
 import { globalAlertContext } from "../../../context/GlobalAlertContext";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 
 const PlanetsForm: FunctionComponent = () => {
   const [formData, setFormData] = useState<Planet>({
@@ -23,6 +27,7 @@ const PlanetsForm: FunctionComponent = () => {
     created: null,
     edited: null,
   });
+  const { id } = useParams();
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const { user } = useAuth();
   const { setAlertInfo } = useContext(globalAlertContext);
@@ -65,42 +70,65 @@ const PlanetsForm: FunctionComponent = () => {
       validForm = false;
       setErrors((prevState) => ({ ...prevState, surface_water: true }));
     }
-    setAlertInfo({
-      title: "Error",
-      subtitle: "TEST",
-      type: "error",
-      show: true,
-    });
     if (validForm) {
       if (!formData.id) {
-        setAlertInfo({
-          title: "Error",
-          subtitle: "TEST",
-          type: "error",
-          show: true,
-        });
-        // createPlanet(formData, user?.token)
-        //   .then((response) => {
-        //     navigate("/planets");
-        //     setAlertInfo({
-        //       title: "Success",
-        //       subtitle: "Planet Saved successfully",
-        //       type: "success",
-        //       show: true,
-        //     })
-        //   }
-        //   )
-        //   .catch((err) =>
-        //     setAlertInfo({
-        //       title: "Error",
-        //       subtitle: err.message,
-        //       type: "error",
-        //       show: true,
-        //     })
-        //   );
+        createPlanet(formData, user?.token)
+          .then((response) => {
+            navigate("/planets");
+            setAlertInfo({
+              title: "Success",
+              subtitle: "Planet Saved successfully",
+              type: "success",
+              show: true,
+            });
+          })
+          .catch((err) =>
+            setAlertInfo({
+              title: "Error",
+              subtitle: err.message,
+              type: "error",
+              show: true,
+            })
+          );
+      } else {
+        updatePlanet(formData, user?.token)
+          .then((response) => {
+            navigate("/planets");
+            setAlertInfo({
+              title: "Success",
+              subtitle: "Planet Saved successfully",
+              type: "success",
+              show: true,
+            });
+          })
+          .catch((err) =>
+            setAlertInfo({
+              title: "Error",
+              subtitle: err.message,
+              type: "error",
+              show: true,
+            })
+          );
       }
     }
   };
+  useEffect(() => {
+    if (id) {
+      getPlanetInfo(parseInt(id), user?.token)
+        .then((response) => {
+          const planet = response.data as Planet;
+          setFormData(planet);
+        })
+        .catch((err) =>
+          setAlertInfo({
+            title: "Error",
+            subtitle: err.message,
+            type: "error",
+            show: true,
+          })
+        );
+    }
+  }, [id, user?.token, setAlertInfo]);
   return (
     <>
       <Typography variant="h4" gutterBottom component="h2">
@@ -119,7 +147,7 @@ const PlanetsForm: FunctionComponent = () => {
             name: e.target.value,
           }))
         }
-        // value={firstName}
+        value={formData.name}
         sx={{ mb: 4 }}
         fullWidth
         required
@@ -130,6 +158,7 @@ const PlanetsForm: FunctionComponent = () => {
         sx={{ mb: 4 }}
         error={errors["diameter"]}
         helperText={errors["diameter"] && "Diameter should not be blank"}
+        value={formData.diameter}
         onChange={(e) =>
           setFormData((prevState) => ({
             ...prevState,
@@ -144,6 +173,7 @@ const PlanetsForm: FunctionComponent = () => {
         variant="outlined"
         color="secondary"
         label="Rotation Period"
+        value={formData.rotation_period}
         sx={{ mb: 4 }}
         error={errors["rotation_period"]}
         required
@@ -165,6 +195,7 @@ const PlanetsForm: FunctionComponent = () => {
         label="Orbital Period"
         sx={{ mb: 4 }}
         error={errors["orbital_period"]}
+        value={formData.orbital_period}
         helperText={
           errors["orbital_period"] && "Orbital Period should not be blank"
         }
@@ -174,7 +205,6 @@ const PlanetsForm: FunctionComponent = () => {
             orbital_period: e.target.value,
           }))
         }
-        // value={firstName}
         fullWidth
         required
       />
@@ -185,6 +215,7 @@ const PlanetsForm: FunctionComponent = () => {
         label="Gravity"
         sx={{ mb: 4 }}
         error={errors["gravity"]}
+        value={formData.gravity}
         helperText={errors["gravity"] && "Gravital should not be blank"}
         onChange={(e) =>
           setFormData((prevState) => ({
@@ -192,7 +223,6 @@ const PlanetsForm: FunctionComponent = () => {
             gravity: e.target.value,
           }))
         }
-        // value={firstName}
         fullWidth
         required
       />
@@ -204,6 +234,7 @@ const PlanetsForm: FunctionComponent = () => {
         sx={{ mb: 4 }}
         error={errors["population"]}
         helperText={errors["population"] && "Population should not be blank"}
+        value={formData.population}
         onChange={(e) =>
           setFormData((prevState) => ({
             ...prevState,
@@ -222,6 +253,7 @@ const PlanetsForm: FunctionComponent = () => {
         sx={{ mb: 4 }}
         error={errors["climate"]}
         helperText={errors["climate"] && "Climate should not be blank"}
+        value={formData.climate}
         onChange={(e) =>
           setFormData((prevState) => ({
             ...prevState,
@@ -238,6 +270,7 @@ const PlanetsForm: FunctionComponent = () => {
         color="secondary"
         label="Terrain"
         sx={{ mb: 4 }}
+        value={formData.terrain}
         error={errors["terrain"]}
         helperText={errors["terrain"] && "Terrain should not be blank"}
         onChange={(e) =>
@@ -257,6 +290,7 @@ const PlanetsForm: FunctionComponent = () => {
         label="Surface Water"
         sx={{ mb: 4 }}
         error={errors["surface_water"]}
+        value={formData.surface_water}
         helperText={
           errors["surface_water"] && "Surface Water should not be blank"
         }

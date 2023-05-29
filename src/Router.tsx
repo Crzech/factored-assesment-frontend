@@ -27,6 +27,7 @@ const Router: FunctionComponent = () => (
       <Route path="/films/form" element={<FilmsForm />} />
       <Route path="/planets" element={<PlanetsIndex />} />
       <Route path="/planets/form" element={<PlanetsForm />} />
+      <Route path="/planets/:id" element={<PlanetsForm />} />
     </Route>
     <Route path="/login" element={<LoginPage />} />
     <Route path="/signup" element={<SignUpPage />} />

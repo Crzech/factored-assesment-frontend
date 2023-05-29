@@ -2,11 +2,7 @@ import Router from "./Router";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { AuthProvider } from "./hooks/useAuth";
-import GlobarAlertContext, {
-  globalAlertContext,
-} from "./context/GlobalAlertContext";
-import { Alert, AlertTitle } from "@mui/material";
-import { useContext } from "react";
+import GlobarAlertContext from "./context/GlobalAlertContext";
 
 const defaultTheme = createTheme({
   palette: {

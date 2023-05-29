@@ -180,6 +180,9 @@ const InnerContent: FunctionComponent = () => {
                   ? "info"
                   : "warning"
               }
+              sx={{
+                mb: "40px"
+              }}
             >
               <AlertTitle>{alertInfo.title}</AlertTitle>
               {alertInfo.subtitle}

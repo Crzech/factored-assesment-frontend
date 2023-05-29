@@ -33,3 +33,46 @@ export const createPlanet = async (
     );
   }
 };
+
+export const getPlanetInfo = async (id: number, token: string | undefined) => {
+  try {
+    return await axios.get(`${url}/${id}`, { headers: authHeader(token) });
+  } catch (error) {
+    const err = error as AxiosError<{ [key: string]: {} | [] }>;
+    throw new BackEndError(
+      "We are experiencing unhandled problems, please contact technical support",
+      err.response && err.response.status ? err.response.status : 500
+    );
+  }
+};
+
+export const updatePlanet = async (
+  planet: Planet,
+  token: string | undefined
+) => {
+  try {
+    return await axios.put(`${url}/${planet.id}`, planet, {
+      headers: authHeader(token),
+    });
+  } catch (error) {
+    const err = error as AxiosError<{ [key: string]: {} | [] }>;
+    throw new BackEndError(
+      "We are experiencing unhandled problems, please contact technical support",
+      err.response && err.response.status ? err.response.status : 500
+    );
+  }
+};
+
+export const deletePlanet = async (id: number, token: string | undefined) => {
+  try {
+    return await axios.delete(`${url}/${id}`, {
+      headers: authHeader(token),
+    });
+  } catch (error) {
+    const err = error as AxiosError<{ [key: string]: {} | [] }>;
+    throw new BackEndError(
+      "We are experiencing unhandled problems, please contact technical support",
+      err.response && err.response.status ? err.response.status : 500
+    );
+  }
+};

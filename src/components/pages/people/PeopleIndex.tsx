@@ -9,6 +9,7 @@ import {
   GridColDef,
   GridRowsProp,
 } from "@mui/x-data-grid";
+import { useNavigate } from "react-router";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -125,6 +126,7 @@ const rows: GridRowsProp = [
   },
 ];
 const PeopleIndex: FunctionComponent = () => {
+  let navigate = useNavigate();
   return (
     <>
       <Grid container spacing={1}>
@@ -141,7 +143,7 @@ const PeopleIndex: FunctionComponent = () => {
           justifyContent="end"
           alignItems="center"
         >
-          <Button variant="contained" color="success">
+          <Button onClick={() => {navigate("/people/form")}} variant="contained" color="success">
             Add
           </Button>
         </Grid>

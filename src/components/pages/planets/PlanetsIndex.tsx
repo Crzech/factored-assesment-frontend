@@ -1,6 +1,7 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import { FunctionComponent } from "react";
+import { useNavigate } from "react-router";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -80,7 +81,7 @@ const rows: GridRowsProp = [
     rotation_period: 24,
     orbital_period: 320,
     gravity: 9.82,
-    population: '100B',
+    population: "100B",
     climate: "Weather",
     terrain: "Mountains",
     surface_water: "100B",
@@ -95,7 +96,7 @@ const rows: GridRowsProp = [
     rotation_period: 24,
     orbital_period: 320,
     gravity: 9.82,
-    population: '100B',
+    population: "100B",
     climate: "Weather",
     terrain: "Mountains",
     surface_water: "100B",
@@ -110,22 +111,23 @@ const rows: GridRowsProp = [
     rotation_period: 24,
     orbital_period: 320,
     gravity: 9.82,
-    population: '100B',
+    population: "100B",
     climate: "Weather",
     terrain: "Mountains",
     surface_water: "100B",
     release_date: "21/01/2023",
     created: "21/01/2023",
     edited: "21/01/2023",
-  }
+  },
 ];
 const PlanetsIndex: FunctionComponent = () => {
+  let navigate = useNavigate();
   return (
     <>
       <Grid container spacing={1}>
         <Grid item xs={12} md={6}>
           <Typography variant="h4" gutterBottom component="h2">
-            Films
+            Planets
           </Typography>
         </Grid>
         <Grid
@@ -136,7 +138,7 @@ const PlanetsIndex: FunctionComponent = () => {
           justifyContent="end"
           alignItems="center"
         >
-          <Button variant="contained" color="success">
+          <Button onClick={() => navigate('/planets/form')} variant="contained" color="success">
             Add
           </Button>
         </Grid>

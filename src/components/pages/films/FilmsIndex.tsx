@@ -1,6 +1,7 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
 import { FunctionComponent } from "react";
+import { useNavigate } from "react-router";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -65,8 +66,9 @@ const rows: GridRowsProp = [
   {
     id: 1,
     title: "Jedi Jedi Jedi",
-    episode_id: 1, 
-    opening_crawl: "dasjf;;klwoieqrpioqhwepfoihqwpoeihfpoiqwhfepoihsdpoifpaoiwdfjpoiqwefoiuqwepiofupwkdjf;klasjf",
+    episode_id: 1,
+    opening_crawl:
+      "dasjf;;klwoieqrpioqhwepfoihqwpoeihfpoiqwhfepoihsdpoifpaoiwdfjpoiqwefoiuqwepiofupwkdjf;klasjf",
     director: "Test Director",
     producer: "Test Producer",
     release_date: "21/01/2023",
@@ -76,8 +78,9 @@ const rows: GridRowsProp = [
   {
     id: 2,
     title: "Jedi Jedi Jedi",
-    episode_id: 1, 
-    opening_crawl: "dasjf;;klwoieqrpioqhwepfoihqwpoeihfpoiqwhfepoihsdpoifpaoiwdfjpoiqwefoiuqwepiofupwkdjf;klasjf",
+    episode_id: 1,
+    opening_crawl:
+      "dasjf;;klwoieqrpioqhwepfoihqwpoeihfpoiqwhfepoihsdpoifpaoiwdfjpoiqwefoiuqwepiofupwkdjf;klasjf",
     director: "Test Director",
     producer: "Test Producer",
     release_date: "21/01/2023",
@@ -87,16 +90,18 @@ const rows: GridRowsProp = [
   {
     id: 3,
     title: "Jedi Jedi Jedi",
-    episode_id: 1, 
-    opening_crawl: "dasjf;;klwoieqrpioqhwepfoihqwpoeihfpoiqwhfepoihsdpoifpaoiwdfjpoiqwefoiuqwepiofupwkdjf;klasjf",
+    episode_id: 1,
+    opening_crawl:
+      "dasjf;;klwoieqrpioqhwepfoihqwpoeihfpoiqwhfepoihsdpoifpaoiwdfjpoiqwefoiuqwepiofupwkdjf;klasjf",
     director: "Test Director",
     producer: "Test Producer",
     release_date: "21/01/2023",
     created: "21/01/2023",
     edited: "21/01/2023",
-  }
+  },
 ];
 const FilmsIndex: FunctionComponent = () => {
+  const navigate = useNavigate();
   return (
     <>
       <Grid container spacing={1}>
@@ -113,7 +118,11 @@ const FilmsIndex: FunctionComponent = () => {
           justifyContent="end"
           alignItems="center"
         >
-          <Button variant="contained" color="success">
+          <Button
+            onClick={() => navigate("/films/form")}
+            variant="contained"
+            color="success"
+          >
             Add
           </Button>
         </Grid>

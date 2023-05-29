@@ -1,4 +1,4 @@
-import { FunctionComponent } from "react";
+import { FunctionComponent, useState } from "react";
 import {
   Button,
   Card,
@@ -10,8 +10,15 @@ import {
   Typography,
 } from "@mui/material";
 import logo from "../../assets/logo-starwars.jpg";
+import { useAuth } from "../../hooks/useAuth";
+import { Link } from "react-router-dom";
 // color="#66ada4"
 const LoginPage: FunctionComponent = () => {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+  const { login } = useAuth();
   return (
     <Box>
       <Container component="main" maxWidth="sm">
@@ -46,6 +53,13 @@ const LoginPage: FunctionComponent = () => {
                   id="username"
                   label="Username"
                   name="username"
+                  value={formData.username}
+                  onChange={(e) =>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      username: e.target.value,
+                    }))
+                  }
                   autoFocus
                 />
                 <TextField
@@ -57,9 +71,28 @@ const LoginPage: FunctionComponent = () => {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  value={formData.password}
+                  onChange={(e) =>
+                    setFormData((prevState) => ({
+                      ...prevState,
+                      password: e.target.value,
+                    }))
+                  }
                 />
+                <Box textAlign="center" sx={{ mb: 4 }}>
+                  <Link
+                    style={{ color: "inherit" }}
+                    to="/signup"
+                  >
+                    Create an account
+                  </Link>
+                </Box>
                 <Box textAlign="center">
-                  <Button variant="contained" size="large">
+                  <Button
+                    onClick={() => login(formData.username, formData.password)}
+                    variant="contained"
+                    size="large"
+                  >
                     Log-In
                   </Button>
                 </Box>

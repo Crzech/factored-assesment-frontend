@@ -4,13 +4,13 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FunctionComponent, useState } from "react";
+import { FunctionComponent } from "react";
 import "react-date-picker/dist/DatePicker.css";
 import "react-calendar/dist/Calendar.css";
 
-interface FormData {
+// interface FormData {
   // planets: Array<{ id: number; name: String | undefined }>;
-}
+// }
 
 // const planets = [
 //   { id: 1, name: "Planet 1" },
@@ -18,7 +18,6 @@ interface FormData {
 // ];
 
 const PlanetsForm: FunctionComponent = () => {
-  const [formData, setFormData] = useState<FormData>({});
   return (
     <>
       <Typography variant="h4" gutterBottom component="h2">

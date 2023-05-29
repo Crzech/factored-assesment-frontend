@@ -1,7 +1,17 @@
 import { Button, Grid, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridRowsProp } from "@mui/x-data-grid";
-import { FunctionComponent } from "react";
+import {
+  FunctionComponent,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { useNavigate } from "react-router";
+import Films from "../../../types/films";
+import { getAllFilms } from "../../../services/FilmsService";
+import { useAuth } from "../../../hooks/useAuth";
+import { globalAlertContext } from "../../../context/GlobalAlertContext";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -20,8 +30,6 @@ const columns: GridColDef[] = [
     field: "director",
     headerName: "Director",
     width: 160,
-    // valueGetter: (params: GridValueGetterParams) =>
-    //   `${params.row.firstName || ""} ${params.row.lastName || ""}`,
   },
   {
     field: "producer",
@@ -62,46 +70,30 @@ const columns: GridColDef[] = [
     },
   },
 ];
-const rows: GridRowsProp = [
-  {
-    id: 1,
-    title: "Jedi Jedi Jedi",
-    episode_id: 1,
-    opening_crawl:
-      "dasjf;;klwoieqrpioqhwepfoihqwpoeihfpoiqwhfepoihsdpoifpaoiwdfjpoiqwefoiuqwepiofupwkdjf;klasjf",
-    director: "Test Director",
-    producer: "Test Producer",
-    release_date: "21/01/2023",
-    created: "21/01/2023",
-    edited: "21/01/2023",
-  },
-  {
-    id: 2,
-    title: "Jedi Jedi Jedi",
-    episode_id: 1,
-    opening_crawl:
-      "dasjf;;klwoieqrpioqhwepfoihqwpoeihfpoiqwhfepoihsdpoifpaoiwdfjpoiqwefoiuqwepiofupwkdjf;klasjf",
-    director: "Test Director",
-    producer: "Test Producer",
-    release_date: "21/01/2023",
-    created: "21/01/2023",
-    edited: "21/01/2023",
-  },
-  {
-    id: 3,
-    title: "Jedi Jedi Jedi",
-    episode_id: 1,
-    opening_crawl:
-      "dasjf;;klwoieqrpioqhwepfoihqwpoeihfpoiqwhfepoihsdpoifpaoiwdfjpoiqwefoiuqwepiofupwkdjf;klasjf",
-    director: "Test Director",
-    producer: "Test Producer",
-    release_date: "21/01/2023",
-    created: "21/01/2023",
-    edited: "21/01/2023",
-  },
-];
 const FilmsIndex: FunctionComponent = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const [rows, setRows] = useState<Films[]>([]);
+  const { setAlertInfo } = useContext(globalAlertContext);
+  const fetchFilms = useCallback(() => {
+    getAllFilms(user?.token)
+      .then((response) => {
+        const films = response.data as Films[];
+        setRows(films);
+      })
+      .catch((err) =>
+        setAlertInfo({
+          title: "Error",
+          subtitle: err.message,
+          type: "error",
+          show: true,
+        })
+      );
+  }, [user?.token, setAlertInfo]);
+
+  useEffect(() => {
+    fetchFilms();
+  }, [user?.token, setAlertInfo, fetchFilms]);
   return (
     <>
       <Grid container spacing={1}>
@@ -127,7 +119,17 @@ const FilmsIndex: FunctionComponent = () => {
           </Button>
         </Grid>
         <Grid item xs={12}>
-          <DataGrid columns={columns} rows={rows} />
+          <DataGrid
+            columns={columns}
+            rows={rows}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 10,
+                },
+              },
+            }}
+          />
         </Grid>
       </Grid>
     </>
